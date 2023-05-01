@@ -107,7 +107,7 @@
       <div
         v-for="(link,idx) in boardImgList"
         :key="idx"
-        :class=" `w-2 h-2 rounded-full z-10 ${idx === boardIndex? 'bg-gray-500':'bg-gray-400'}`"
+        :class=" `w-2 h-2 rounded-full z-10 ${idx === boardIndex? 'bg-gray-500':' bg-gray-600/70'}`"
       >
       </div>
     </div>
@@ -137,13 +137,13 @@
         :key="idx"
       >
         <p>{{ str }}</p>
-        <button class="border-2 border-slate-500 p-2 text-xs">SHOP NOW</button>
+        <button class="border-2 border-slate-500 p-2 text-[10px]">SHOP NOW</button>
       </li>
     </ul>
   </div>
   <!-- Discount -->
   <div>
-    <p class="p-8 text-center text-3xl font-bold tracking-[0.5rem] text-red-700">精選折扣</p>
+    <p class="p-8 text-center text-3xl font-bold tracking-[0.5rem] text-red-700 ">精選折扣</p>
     <p
       class="border-2 border-slate-600 w-fit mt-2 mb-2 mr-4 ml-4 pl-1 pr-1 rounded-md hover:cursor-pointer"
       @click="changeStyle=!changeStyle"
@@ -151,7 +151,7 @@
     <div :class="`flex ${changeStyle?'flex-col':''} flex-wrap gap-2 justify-center items-start`">
       <div
         v-for="(product,idx) in discountProductList"
-        :class="`${changeStyle?'w-full pl-4 pr-4':'w-56'}`"
+        :class="`${changeStyle?'w-full pl-4 pr-4':'w-56 '} transition delay-500 ease-in-out  `"
         :key="idx"
       >
         <img
@@ -163,14 +163,201 @@
 
         </div>
         <p class="font-normal">NT$ {{product.discount}}</p>
-        <button class="pt-1 pb-1 pr-2 pl-2 rounded-md text-sm w-28 border-[1px] border-slate-800 mt-2">加入購物車</button>
+        <button class="pt-1 pb-1 pr-2 pl-2 rounded-md text-sm w-28 border-[1px] border-slate-800 mt-2 hover:bg-gray-500 hover:text-white">加入購物車</button>
       </div>
 
     </div>
   </div>
   <!-- Hito Topic -->
   <div>
-
+    <p class="p-8 text-center text-3xl font-bold tracking-[0.5rem] ">熱門話題</p>
+    <div class="pl-4 pr-4">
+      <div class="relative mb-4">
+        <p class=" absolute top-[50%] left-8 text-white z-10">有感精選</p>
+        <button class="text-white border-[1px] border-white absolute top-[57%] left-8 pl-4 pr-4 pb-1 pt-1 text-xs z-10">馬上逛逛</button>
+        <img
+          src="boardList_1.png"
+          class="w-full h-[478px] object-cover "
+          alt=""
+        >
+        <div class="w-full h-full bg-black/50 hover:bg-gray-600/50 transition delay-100 ease-linear absolute top-0 left-0"></div>
+      </div>
+      <div class="relative mb-4">
+        <p class=" absolute top-[50%] left-8 text-white z-10">有感精選</p>
+        <button class="text-white border-[1px] border-white absolute top-[57%] left-8 pl-4 pr-4 pb-1 pt-1 text-xs z-10">馬上逛逛</button>
+        <img
+          src="boardList_2.png"
+          class="w-full h-[478px] object-cover "
+          alt=""
+        >
+        <div class="w-full h-full bg-black/50 hover:bg-gray-600/50 transition delay-100 ease-linear absolute top-0 left-0"></div>
+      </div>
+      <div class="relative ">
+        <p class=" absolute top-[50%] left-8 text-white z-10">有感精選</p>
+        <button class="text-white border-[1px] border-white absolute top-[57%] left-8 pl-4 pr-4 pb-1 pt-1 text-xs z-10">馬上逛逛</button>
+        <img
+          src="boardList_3.png"
+          class="w-full h-[478px] object-cover "
+          alt=""
+        >
+        <div class="w-full h-full bg-black/50 hover:bg-gray-600/50 transition delay-100 ease-linear absolute top-0 left-0"></div>
+      </div>
+    </div>
+  </div>
+  <!-- Find Goods-->
+  <div>
+    <p class="p-8 text-center text-3xl font-bold tracking-[0.5rem] ">尋找好物</p>
+    <div class="pl-4 pr-4">
+      <div class="relative mb-4 w-full h-[340px] overflow-hidden">
+        <div class="absolute top-1/2 w-full flex flex-col justify-center items-center text-white z-10">
+          <div class=" font-bold mb-3 text-xs">居家生活</div>
+          <button class=" font-thin pl-4 pr-4 pt-1 pb-1 border-[1px] border-white text-xs hover:bg-white">馬上逛逛</button>
+        </div>
+        <img
+          src="boardList_1.png"
+          class="w-full h-[340px] object-cover hover:bg-gray-300 hover:scale-105 transition-transform hover:cursor-pointer hover:brightness-125 hover:blur-sm"
+          alt=""
+        >
+      </div>
+      <div class="relative mb-4 w-full h-[340px] overflow-hidden">
+        <div class="absolute top-1/2 w-full flex flex-col justify-center items-center text-white z-10">
+          <div class=" font-bold mb-3 text-xs">品味餐廚</div>
+          <button class=" font-thin pl-4 pr-4 pt-1 pb-1 border-[1px] border-white text-xs hover:bg-white">馬上逛逛</button>
+        </div>
+        <img
+          src="boardList_2.png"
+          class="w-full h-[340px] object-cover hover:bg-gray-300 hover:scale-105 transition-transform hover:cursor-pointer hover:brightness-125 hover:blur-sm"
+          alt=""
+        >
+      </div>
+      <div class="relative mb-4 w-full h-[340px] overflow-hidden">
+        <div class="absolute top-1/2 w-full flex flex-col justify-center items-center text-white z-10">
+          <div class=" font-bold mb-3 text-xs">個人風格</div>
+          <button class=" font-thin pl-4 pr-4 pt-1 pb-1 border-[1px] border-white text-xs hover:bg-white">馬上逛逛</button>
+        </div>
+        <img
+          src="boardList_3.png"
+          class="w-full h-[340px] object-cover hover:bg-gray-300 hover:scale-105 transition-transform hover:cursor-pointer hover:brightness-125 hover:blur-sm"
+          alt=""
+        >
+      </div>
+      <div class="relative mb-4 w-full h-[340px] overflow-hidden">
+        <div class="absolute top-1/2 w-full flex flex-col justify-center items-center text-white z-10">
+          <div class=" font-bold mb-3 text-xs">媽咪寶貝</div>
+          <button class=" font-thin pl-4 pr-4 pt-1 pb-1 border-[1px] border-white text-xs hover:bg-white">馬上逛逛</button>
+        </div>
+        <img
+          src="boardList_1.png"
+          class="w-full h-[340px] object-cover hover:bg-gray-300 hover:scale-105 transition-transform hover:cursor-pointer hover:brightness-125 hover:blur-sm"
+          alt=""
+        >
+      </div>
+    </div>
+  </div>
+  <!-- Follow us -->
+  <div>
+    <p class="p-8 text-center text-3xl font-bold tracking-[0.5rem] ">關注我們</p>
+    <div class="pl-4 pr-4 w-full h-[440px] flex justify-center flex-wrap gap-1">
+      <div class="w-[143px] h-[143px] relative overflow-hidden">
+        <div class="absolute w-full h-full flex flex-col justify-center items-center z-10 opacity-0 text-white hover:opacity-100 hover:bg-black/50 translate-y-10 hover:translate-y-0 transition delay-200 ease-in-out hover:cursor-pointer">
+          <p class="absolute top-0  ">#媽的購物節</p>
+          <p class="absolute bottom-0 ">Icon</p>
+        </div>
+        <img
+          src="boardList_1.png"
+          class="absolute top-0 w-full h-full object-cover"
+          alt=""
+        >
+      </div>
+      <div class="w-[143px] h-[143px] relative overflow-hidden">
+        <div class="absolute w-full h-full flex flex-col justify-center items-center z-10 opacity-0 text-white hover:opacity-100 hover:bg-black/50 translate-y-10 hover:translate-y-0 transition delay-200 ease-in-out hover:cursor-pointer ">
+          <p class="absolute top-0  ">#媽的購物節</p>
+          <p class="absolute bottom-0 ">Icon</p>
+        </div>
+        <img
+          src="boardList_1.png"
+          class="absolute top-0 w-full h-full object-cover"
+          alt=""
+        >
+      </div>
+      <div class="w-[143px] h-[143px] relative overflow-hidden">
+        <div class="absolute w-full h-full flex flex-col justify-center items-center z-10 opacity-0 text-white hover:opacity-100 hover:bg-black/50 translate-y-10 hover:translate-y-0 transition delay-200 ease-in-out hover:cursor-pointer">
+          <p class="absolute top-0  ">#媽的購物節</p>
+          <p class="absolute bottom-0 ">Icon</p>
+        </div>
+        <img
+          src="boardList_1.png"
+          class="absolute top-0 w-full h-full object-cover"
+          alt=""
+        >
+      </div>
+      <div class="w-[143px] h-[143px] relative overflow-hidden">
+        <div class="absolute w-full h-full flex flex-col justify-center items-center z-10 opacity-0 text-white hover:opacity-100 hover:bg-black/50 translate-y-10 hover:translate-y-0 transition delay-200 ease-in-out hover:cursor-pointer">
+          <p class="absolute top-0  ">#媽的購物節</p>
+          <p class="absolute bottom-0 ">Icon</p>
+        </div>
+        <img
+          src="boardList_1.png"
+          class="absolute top-0 w-full h-full object-cover"
+          alt=""
+        >
+      </div>
+      <div class="w-[143px] h-[143px] relative overflow-hidden">
+        <div class="absolute w-full h-full flex flex-col justify-center items-center z-10 opacity-0 text-white hover:opacity-100 hover:bg-black/50 translate-y-10 hover:translate-y-0 transition delay-200 ease-in-out hover:cursor-pointer">
+          <p class="absolute top-0  ">#媽的購物節</p>
+          <p class="absolute bottom-0 ">Icon</p>
+        </div>
+        <img
+          src="boardList_1.png"
+          class="absolute top-0 w-full h-full object-cover"
+          alt=""
+        >
+      </div>
+      <div class="w-[143px] h-[143px] relative overflow-hidden">
+        <div class="absolute w-full h-full flex flex-col justify-center items-center z-10 opacity-0 text-white hover:opacity-100 hover:bg-black/50 translate-y-10 hover:translate-y-0 transition delay-200 ease-in-out hover:cursor-pointer">
+          <p class="absolute top-0  ">#媽的購物節</p>
+          <p class="absolute bottom-0 ">Icon</p>
+        </div>
+        <img
+          src="boardList_1.png"
+          class="absolute top-0 w-full h-full object-cover"
+          alt=""
+        >
+      </div>
+      <div class="w-[143px] h-[143px] relative overflow-hidden">
+        <div class="absolute w-full h-full flex flex-col justify-center items-center z-10 opacity-0 text-white hover:opacity-100 hover:bg-black/50 translate-y-10 hover:translate-y-0 transition delay-200 ease-in-out hover:cursor-pointer">
+          <p class="absolute top-0  ">#媽的購物節</p>
+          <p class="absolute bottom-0 ">Icon</p>
+        </div>
+        <img
+          src="boardList_1.png"
+          class="absolute top-0 w-full h-full object-cover"
+          alt=""
+        >
+      </div>
+      <div class="w-[143px] h-[143px] relative overflow-hidden">
+        <div class="absolute w-full h-full flex flex-col justify-center items-center z-10 opacity-0 text-white hover:opacity-100 hover:bg-black/50 translate-y-10 hover:translate-y-0 transition delay-200 ease-in-out hover:cursor-pointer">
+          <p class="absolute top-0  ">#媽的購物節</p>
+          <p class="absolute bottom-0 ">Icon</p>
+        </div>
+        <img
+          src="boardList_1.png"
+          class="absolute top-0 w-full h-full object-cover"
+          alt=""
+        >
+      </div>
+      <div class="w-[143px] h-[143px] relative overflow-hidden">
+        <div class="absolute w-full h-full flex flex-col justify-center items-center z-10 opacity-0 text-white hover:opacity-100 hover:bg-black/50 translate-y-10 hover:translate-y-0 transition delay-200 ease-in-out hover:cursor-pointer">
+          <p class="absolute top-0  ">#媽的購物節</p>
+          <p class="absolute bottom-0 ">Icon</p>
+        </div>
+        <img
+          src="boardList_1.png"
+          class="absolute top-0 w-full h-full object-cover"
+          alt=""
+        >
+      </div>
+    </div>
   </div>
 </template>
 
