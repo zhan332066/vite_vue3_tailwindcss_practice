@@ -1,8 +1,24 @@
 <script setup>
-  import { reactive, ref, watch } from "vue";
+  import { faL, fas } from "@fortawesome/free-solid-svg-icons";
+  import { reactive, ref, watch, onMounted } from "vue";
 
-  const menuclick = ref(false);
-
+  const menuclick = ref(true);
+  const changeStyle = ref(true);
+  const menuType = ref("");
+  const menuTypeChange = () => {
+    if (deviceType.value === 0) {
+      menuType.value = menuclick.value
+        ? "absolute md:static right-0 top-11 w-40 bg-slate-400 md:top-0 md:flex md:w-full md:gap-4 md:bg-transparent md:p-0 md:pr-4 opacity-100"
+        : "absolute right-0 top-11  opacity-0";
+    } else {
+      menuType.value = menuclick.value
+        ? "absolute right-0 top-11 w-40 bg-slate-400 flex flex-col top-0 flex gap-1 p-0 pr-4 opacity-100"
+        : "absolute right-0 top-11  opacity-0";
+    }
+  };
+  onMounted(() => {
+    menuTypeChange();
+  });
   const navList = {
     news: "NEWS & EVENTS",
     moto: "摩托車",
@@ -13,12 +29,9 @@
     warranty: "售後服務",
   };
 
-  const menuList = ref(null);
-
   const handlerMenuEvent = () => {
     menuclick.value = !menuclick.value;
-
-    // $refs('menuList')
+    menuTypeChange();
   };
 
   const boardImgList = [
@@ -27,7 +40,7 @@
     "boardProduct_3.png",
   ];
   const boardIndex = ref(0);
-
+  const adProduct = ref("adProduct.png");
   const newProductImgList = [
     "newProduct_1.png",
     "newProduct_2.png",
@@ -158,246 +171,346 @@
     },
   ];
 
-  const handlerChangeInnerWidth = (innerWidth = 0) => {
-    window.innerWidth = innerWidth === 0 ? window.screen.width : innerWidth;
-    console.log(window.innerWidth);
+  const deviceType = ref(0);
+
+  const deviceSize = ref("w-full h-full");
+
+  const handlerChangeDevice = (type) => {
+    deviceType.value = type;
+    deviceSize.value =
+      type === 0
+        ? "w-full h-full"
+        : type === 1
+        ? "w-[820px] h-[844px]"
+        : "w-[390px] h-[844px]";
+    menuclick.value = deviceType.value === 0 ? true : false;
+    changeStyle.value = deviceType.value === 0 ? true : false;
+    menuTypeChange();
   };
 
   window.addEventListener("resize", () => {
-    menuclick.value = window.innerWidth > 767 ? true : false;
-    changeStyle.value = window.innerWidth > 767 ? true : false;
+    if (window.innerWidth > 501) {
+      deviceType.value = 0;
+    }
+    menuclick.value = window.innerWidth > 501 ? true : false;
+    changeStyle.value = window.innerWidth > 501 ? true : false;
+    menuTypeChange();
   });
-
-  const changeStyle = ref(false);
 </script>
 
 <template>
-  <!-- RWD toggleButton -->
-  <div class="hidden md:flex h-16  justify-center gap-2 p-2 bg-slate-10">
-    <button
-      class="w-10 text-2xl rounded-md shadow-[1px_1px_2px_1px_rgba(0,0,0,0.3)] focus:shadow-inner focus:shadow-slate-600 "
-      @click="handlerChangeInnerWidth(0)"
-    ><font-awesome-icon
-        class="hover:cursor-pointer"
-        :icon="['fa', 'computer']"
-      /></button>
-    <button
-      class="w-10 flex justify-center pt-3 pb-3 rounded-md shadow-[1px_1px_2px_1px_rgba(0,0,0,0.3)] focus:shadow-inner focus:shadow-slate-600"
-      @click="handlerChangeInnerWidth(753)"
-    >
-      <div class="w-6 h-full border-[3px] border-black rounded-sm
-      "></div>
-    </button>
-    <button
-      class="w-10 flex justify-center pt-3 pb-3 pl-3 pr-3 rounded-md shadow-[1px_1px_2px_1px_rgba(0,0,0,0.3)] focus:shadow-inner focus:shadow-slate-600"
-      @click="handlerChangeInnerWidth(354)"
-    >
-      <div class="w-6 h-full border-[3px] border-black rounded-sm
-      "></div>
-    </button>
-  </div>
-  <!-- nav -->
-  <div class="flex h-16 w-full items-center justify-between bg-gray-800">
-    <p class="ml-2 font-[Trattatello] text-3xl text-gray-200 hover:cursor-pointer">RustRunner</p>
+  <div
+    class="full-setting"
+    :class="[deviceType===0?'h-full':'h-screen ']"
+  >
+    <!-- RWD toggleButton -->
+    <div class="div-togglebutton">
+      <button
+        class="togglebtn-pc"
+        @click="handlerChangeDevice(0)"
+      ><font-awesome-icon :icon="['fa', 'computer']" /></button>
+      <div class="dividing-line"></div>
+      <button
+        class="togglebtn-pad"
+        @click="handlerChangeDevice(1)"
+      >
+        <div class="inside-square"></div>
+      </button>
+      <div class="dividing-line"></div>
+      <button
+        class="togglebtn-phone"
+        @click="handlerChangeDevice(2)"
+      >
+        <div class="inside-square"></div>
+      </button>
+    </div>
+    <div :class="[deviceSize]">
+      <div
+        class="scoped-size"
+        :class="[deviceType!==0?'mt-4 overflow-y-scroll box-border ':' overflow-clip ']"
+      >
+        <!-- nav -->
+        <div class="nav">
+          <p class="logo">RustRunner</p>
 
-    <div class="relative flex h-6 w-6 flex-col items-center justify-center gap-1 text-white md:w-full md:flex-row md:justify-end">
-      <p
-        class="mr-4 text-2xl hover:text-gray-300 md:hidden"
-        @click="handlerMenuEvent"
-      >
-        <font-awesome-icon
-          class="transition delay-700 ease-in-out active:animate-spin"
-          :icon="!menuclick ? ['fa', 'list'] : ['fa', 'x']"
-        />
-      </p>
-      <ol
-        ref="menuList"
-        :class="`absolute ${
-          menuclick ? 'opacity-100' : 'opacity-0'
-        } right-0 top-11 w-40 justify-end  bg-slate-400 p-4 md:top-0 md:flex md:w-full md:gap-4 md:bg-transparent md:p-0 md:pr-4 z-10`"
-      >
-        <li
-          class="hover:italic hover:text-black md:hover:text-white overflow-hidden md:border-white after:block after:w-full after:translate-x-[-100%] after:h-[1px] md:after:bg-white after:bg-black after:hover:translate-x-0 after:hover:transition-transform hover:cursor-pointer"
-          v-for="(value, key) in navList"
-          :key="key"
-        >
-          <a class="">{{ value }}</a>
-        </li>
-      </ol>
-    </div>
-  </div>
-  <!-- first Block -->
-  <div class="md:flex">
-    <!-- boardList -->
-    <div :class="`z-0 h-[650px] w-full flex flex-col justify-center gap-2 pb-2 md:pb-0 md:flex-1 relative overflow-hidden` ">
-      <div class="absolute flex flex-1 items-center justify-between pl-4 pr-4 font-serif w-full text-6xl z-10 ">
-        <div
-          class="font-bold text-white/60 hover:cursor-pointer hover:text-white/80"
-          @click="runBoardIndex(-1)"
-        >
-          &lt;
+          <div class="menu">
+            <p
+              class="menu-logo"
+              :class="[deviceType===0 ?'md:hidden':'']"
+              @click="handlerMenuEvent"
+            >
+              <font-awesome-icon :icon="!menuclick ? ['fa', 'list'] : ['fa', 'x']" />
+            </p>
+            <ol
+              class="menu-list"
+              :class="[menuType]"
+            >
+              <li
+                class="menu-item"
+                v-for="(value, key) in navList"
+                :key="key"
+              >
+                <a>{{ value }}</a>
+              </li>
+            </ol>
+          </div>
         </div>
+        <!-- first Block -->
+        <div
+          class="first-block"
+          :class="[deviceType===2?'flex-col h-full':'']"
+        >
+          <!-- boardList -->
+          <div class="board-list">
+            <div class="board-togglebtn-position">
+              <div
+                class="board-togglebtn"
+                @click="runBoardIndex(-1)"
+              >
+                &lt;
+              </div>
 
-        <div
-          class="font-bold text-white/60 hover:cursor-pointer hover:text-white/80"
-          @click="runBoardIndex(1)"
-        >
-          &gt;
+              <div
+                class="board-togglebtn"
+                @click="runBoardIndex(1)"
+              >
+                &gt;
+              </div>
+            </div>
+            <div class="board-pagination-position">
+              <div
+                v-for="(link, idx) in boardImgList"
+                :key="idx"
+                class="pagination-item"
+                :class="[idx === boardIndex ? 'bg-gray-500' : ' bg-gray-600/70']"
+              ></div>
+            </div>
+            <img
+              :src="boardImgList[boardIndex]"
+              class="board-img"
+              alt=""
+            >
+          </div>
+          <!-- AD -->
+          <div class="ad">
+            <img
+              :src="adProduct"
+              class="ad-img"
+              alt=""
+            >
+          </div>
         </div>
-      </div>
-      <div class="absolute bottom-4 w-full flex items-end justify-center gap-2">
-        <div
-          v-for="(link, idx) in boardImgList"
-          :key="idx"
-          :class="`z-10 h-2 w-2 rounded-full ${
-            idx === boardIndex ? 'bg-gray-500' : ' bg-gray-600/70'
-          }`"
-        ></div>
-      </div>
-      <img
-        :src="boardImgList[boardIndex]"
-        class=" absolute w-full h-full object-cover hover:scale-110 transition delay-200 ease-in-out duration-500"
-        alt=""
-      >
-    </div>
-    <!-- AD -->
-    <div class="z-0 flex h-[650px] w-full flex-col justify-center gap-2 pb-2 md:pb-0 md:flex-1 items-center">
-      <img
-        src="ad.png"
-        class=" w-full h-full object-cover "
-        alt=""
-      >
-    </div>
-  </div>
-  <!-- Second Block -->
-  <div>
-    <!-- New Product -->
-    <p class="p-8 text-center text-3xl font-bold tracking-[0.5rem]">新品上架</p>
-    <div class="md:flex md:gap-4 md:pl-4 md:pr-4">
-      <div class="md:flex-1 ">
-        <div :class="`z-0 h-[465px] w-full `">
-          <img
-            :src="newProductImgList[newProductIndex]"
-            class="w-full h-full object-cover"
-            alt=""
+        <!-- Second Block -->
+        <div>
+          <!-- New Product -->
+          <p class="block-title">新品上架</p>
+          <div
+            class="block-newproduct"
+            :class="[deviceType===2?'flex-col h-full':'']"
           >
-        </div>
-      </div>
-      <div class="md:flex-1">
-        <ul class="p-2 md:flex md:h-full md:flex-col md:justify-around md:p-0">
-          <li
-            class="mb-2 flex h-16 items-center justify-between bg-gray-100 pl-6 pr-4 transition-colors last:mb-0 hover:cursor-pointer hover:bg-gray-800 hover:text-white"
-            v-for="(str, idx) in NewProductList"
-            :key="idx"
-          >
-            <p>{{ str }}</p>
-            <button class="border-2 border-slate-500 p-2 text-[10px]">
-              SHOP NOW
-            </button>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </div>
-  <!-- Third Block -->
-  <div>
-    <!-- Discount -->
-    <p class="p-8 text-center text-3xl font-bold tracking-[0.5rem] text-red-700">
-      精選折扣
-    </p>
-    <p
-      class="mb-2 ml-4 mr-4 mt-2 w-fit rounded-md border-2 border-slate-600 pl-1 pr-1 hover:cursor-pointer md:hidden"
-      @click="changeStyle = !changeStyle"
-    >
-      <font-awesome-icon :icon="changeStyle ? ['fa', 'list'] : ['fa', 'table']" />
-    </p>
-    <div :class="`flex ${
-        changeStyle ? 'flex-col md:flex-row' : ''
-      } flex-wrap items-start justify-center gap-2 md:gap-8 `">
-      <div
-        v-for="(product, idx) in discountProductList"
-        :class="`${
-          changeStyle ? 'w-full sm:w-[260px]  md:object-cover ' : 'w-56 '
-        } bg-white transition delay-500 ease-in-out  `"
-        :key="idx"
-      >
-        <img
-          :class="`${changeStyle ? '' : 'h-56 w-56 object-cover'}`"
-          :src="product.url"
-        />
-        <p class="mt-2 whitespace-pre-wrap">{{ product.name }}</p>
-        <div class="text-sm font-light md:text-xs">
-          建議售價
-          <p class="inline-block line-through">NT${{ product.price }}</p>
-        </div>
-        <p class="font-normal md:text-sm">NT$ {{ product.discount }}</p>
-        <button class="mt-2 w-28 rounded-md border-[1px] border-slate-800 pb-1 pl-2 pr-2 pt-1 text-sm hover:bg-gray-500 hover:text-white">
-          加入購物車
-        </button>
-      </div>
-    </div>
-  </div>
-  <!-- Forth Block -->
-  <div>
-    <!-- Hito Topic -->
-    <p class="p-8 text-center text-3xl font-bold tracking-[0.5rem]">熱門話題</p>
-    <div class="pl-4 pr-4 md:flex">
-      <div
-        class="relative mb-4 last:mb-0 md:mb-0 md:flex-1"
-        v-for="(product,idx) in hitoProductList"
-        :key="idx"
-      >
-        <p class="absolute left-8 top-[50%] z-10 text-white">{{product.title}}</p>
-        <button class="absolute left-8 top-[57%] z-10 border-[1px] border-white pb-1 pl-4 pr-4 pt-1 text-xs text-white">
-          馬上逛逛
-        </button>
-        <img
-          :src="product.url"
-          class="h-[478px] w-full object-cover"
-          alt=""
-        />
-        <div class="absolute left-0 top-0 h-full w-full bg-black/50 transition delay-100 ease-linear hover:bg-gray-600/50"></div>
-      </div>
 
-    </div>
-  </div>
-  <!-- Fifth Block -->
-  <div>
-    <!-- Find Goods-->
-    <p class="p-8 text-center text-3xl font-bold tracking-[0.5rem]">尋找好物</p>
-    <div class="pl-4 pr-4 md:flex md:gap-6">
-      <div
-        class="relative mb-4 h-[340px] w-full overflow-hidden md:mb-0 md:flex-1"
-        v-for="(product,idx) in goodProductList"
-        :key="idx"
-      >
-        <div class="absolute top-1/2 z-10 flex w-full flex-col items-center justify-center text-white">
-          <div class="mb-3 text-xs font-bold">{{ product.title }}</div>
-          <button class="border-[1px] border-white pb-1 pl-4 pr-4 pt-1 text-xs font-thin hover:bg-white hover:text-black">
-            馬上逛逛
-          </button>
+            <div class="newproduct-block-img">
+              <img
+                :src="newProductImgList[newProductIndex]"
+                class="newproduct-img"
+                alt=""
+              >
+            </div>
+
+            <ul class="newproduct-itemlist">
+              <li
+                class="newproduct-item"
+                v-for="(str, idx) in NewProductList"
+                :key="idx"
+              >
+                <p>{{ str }}</p>
+                <button class="newproduct-btn">
+                  SHOP NOW
+                </button>
+              </li>
+            </ul>
+          </div>
         </div>
-        <img
-          :src="product.url"
-          class="h-[340px] w-full object-cover transition-transform hover:scale-105 hover:cursor-pointer hover:bg-gray-300 hover:blur-sm hover:brightness-125"
-          alt=""
-        />
-      </div>
-    </div>
-  </div>
-  <!-- Sixth Block -->
-  <div>
-    <!-- Follow us -->
-    <p class="p-8 text-center text-3xl font-bold tracking-[0.5rem]">關注我們</p>
-    <div :class="`flex columns-3 flex-wrap justify-center pl-4 pr-4 mb-8`">
-      <div
-        :class="`relative w-[30vw] h-[30vw] flex justify-center items-center p-1`"
-        v-for="(item,idx) in followusList"
-        :key="idx"
-      >
-        <div class="absolute top-0 w-full h-full flex flex-col justify-between align-middle text-white text-center pt-4 pb-4 hover:bg-black/50 opacity-0 hover:opacity-100 transition delay-300 ease-linear hover:cursor-pointer ">
-          <p class="md:text-3xl">{{ item.content }}</p>
-          <p class="flex gap-4 justify-center md:text-3xl">
+        <!-- Third Block -->
+        <div>
+          <!-- Discount -->
+          <p class="block-title text-red-700">
+            精選折扣
+          </p>
+          <p
+            class="discount-changetype-btn"
+            :class="[deviceType!==2?'sm:hidden':'']"
+            @click="changeStyle = !changeStyle"
+          >
+            <font-awesome-icon :icon="changeStyle ? ['fa', 'list'] : ['fa', 'table']" />
+          </p>
+          <div
+            :class="[changeStyle ? 'flex-col sm:flex-row ' : '']"
+            class="block-discount"
+          >
+
+            <div
+              v-for="(product, idx) in discountProductList"
+              class="discount-item"
+              :class="[ changeStyle  ? deviceType===2?'w-full': 'w-full sm:w-[300px]  sm:h-full' :  'w-[47%] h-full']"
+              :key="idx"
+            >
+              <div
+                :class="[ changeStyle ? deviceType===2?'w-full':  'h-96 w-full sm:w-[300px] object-cover' : deviceType===2?'w-full h-44':'w-full h-44 sm:h-96 sm:w-full']"
+                class="overflow-hidden"
+              >
+                <img
+                  class="h-full w-full "
+                  :src="product.url"
+                />
+              </div>
+
+              <p class="mt-2 whitespace-pre-wrap">{{ product.name }}</p>
+              <div class="text-sm font-light md:text-xs">
+                建議售價
+                <p class="inline-block line-through">NT${{ product.price.toLocaleString() }}</p>
+              </div>
+              <p class="font-normal md:text-sm">NT$ {{ product.discount.toLocaleString() }}</p>
+              <button class="discount-btn">
+                加入購物車
+              </button>
+            </div>
+          </div>
+        </div>
+        <!-- Forth Block -->
+        <div>
+          <!-- Hito Topic -->
+          <p class="block-title">熱門話題</p>
+          <div
+            class="block-hitotopic"
+            :class="[deviceType===2?'flex-col':'']"
+          >
+            <div
+              class="hitotopic-items"
+              v-for="(product,idx) in hitoProductList"
+              :key="idx"
+            >
+              <p class="hitotopic-btn-position">{{product.title}}</p>
+              <button class="hitotopic-btn">
+                馬上逛逛
+              </button>
+              <img
+                :src="product.url"
+                class="hitotopic-img"
+                alt=""
+              />
+              <div class="hitotopic-hover"></div>
+            </div>
+
+          </div>
+        </div>
+        <!-- Fifth Block -->
+        <div>
+          <!-- Find Goods-->
+          <p class="block-title">尋找好物</p>
+          <div
+            class="block-findgoods"
+            :class="[deviceType===2?'flex-col':'']"
+          >
+            <div
+              class="findgoods-items"
+              v-for="(product,idx) in goodProductList"
+              :key="idx"
+            >
+              <div class="findgoods-hover">
+                <div class="mb-3 text-xs font-bold">{{ product.title }}</div>
+                <button class="findgoods-btn">
+                  馬上逛逛
+                </button>
+              </div>
+              <img
+                :src="product.url"
+                class="findgoods-img"
+                alt=""
+              />
+            </div>
+          </div>
+        </div>
+        <!-- Sixth Block -->
+        <div>
+          <!-- Follow us -->
+          <p class="block-title">關注我們</p>
+          <div class="block-followus">
+            <div
+              class="followus-item"
+              :class="[deviceType!==0?'w-1/3 h-1/3':' w-[30vw] h-[30vw]']"
+              v-for="(item,idx) in followusList"
+              :key="idx"
+            >
+              <div class="followus-item-position">
+                <p
+                  class="text-sm"
+                  :class="[deviceType===2?'':'md:text-3xl ']"
+                >{{ item.content }}</p>
+                <p
+                  class="followus-icon"
+                  :class="[deviceType===2?'':'md:text-3xl']"
+                >
+                  <font-awesome-icon
+                    class="hover:cursor-pointer"
+                    :icon="['fab', 'facebook']"
+                  />
+                  <font-awesome-icon
+                    class="hover:cursor-pointer"
+                    :icon="['fab', 'instagram']"
+                  />
+                  <font-awesome-icon
+                    class="hover:cursor-pointer"
+                    :icon="['fab', 'pinterest']"
+                  />
+                </p>
+              </div>
+              <img
+                :src="item.url"
+                class="object-center"
+                alt=""
+              >
+            </div>
+          </div>
+        </div>
+        <!-- Footer -->
+        <div
+          class="block-footer"
+          :class="[deviceType!==0?'flex-col h-fit':'flex-col md:flex-row md:h-40']"
+        >
+          <!-- contact with us -->
+          <div class="footer-inline-block">
+            <p class="font-bold ">聯絡我們</p>
+            <p class="text-sm">客服時間 Mon-Fir 9:00 - 16:00</p>
+            <p class="text-sm">客服信箱 test@abc.com.tw</p>
+            <p class="text-sm">商務合作 domain@test.com.tw</p>
+          </div>
+          <!-- customer service -->
+          <div class="footer-inline-block">
+            <p class="font-bold">顧客服務</p>
+            <a
+              class="text-sm"
+              href=""
+            >購物說明</a>
+            <a
+              class="text-sm"
+              href=""
+            >退換貨說明</a>
+            <a
+              class="text-sm"
+              href=""
+            >隱私權條款</a>
+            <a
+              class="text-sm"
+              href=""
+            >常見Q&A</a>
+          </div>
+          <!-- member service -->
+          <div class="footer-inline-block">
+            <p>會員專區</p>
+          </div>
+          <!-- social media icon -->
+          <div class="footer-mediaicon">
             <font-awesome-icon
               class="hover:cursor-pointer"
               :icon="['fab', 'facebook']"
@@ -410,76 +523,186 @@
               class="hover:cursor-pointer"
               :icon="['fab', 'pinterest']"
             />
-          </p>
+          </div>
+          <!-- search form -->
+          <div class="footer-searchform">
+            <input
+              class="searchform-input"
+              type="text"
+            >
+            <button class="searchform-btn"><font-awesome-icon :icon="['fa', 'search']" /></button>
+          </div>
         </div>
-        <img
-          :src="item.url"
-          class="w-full h-full object-cover object-center"
-          alt=""
-        >
       </div>
     </div>
   </div>
-  <!-- Footer -->
-  <div class="w-ful h-full md:h-40 bg-black flex flex-col md:flex-row justify-around text-white">
 
-    <!-- contact with us -->
-    <div class="flex-1  m-2 flex flex-col p-4">
-      <p class="font-bold ">聯絡我們</p>
-      <p class="text-sm">客服時間 Mon-Fir 9:00 - 16:00</p>
-      <p class="text-sm">客服信箱 test@abc.com.tw</p>
-      <p class="text-sm">商務合作 domain@test.com.tw</p>
-    </div>
-    <!-- customer service -->
-    <div class="flex-1  m-2 flex flex-col p-4">
-      <p class="font-bold">顧客服務</p>
-      <a
-        class="text-sm"
-        href=""
-      >購物說明</a>
-      <a
-        class="text-sm"
-        href=""
-      >退換貨說明</a>
-      <a
-        class="text-sm"
-        href=""
-      >隱私權條款</a>
-      <a
-        class="text-sm"
-        href=""
-      >常見Q&A</a>
-    </div>
-    <!-- member service -->
-    <div class="flex-1  m-2 flex flex-col p-4">
-      <p>會員專區</p>
-    </div>
-    <!-- social media icon -->
-    <div class="flex-1  m-2 flex justify-start gap-6 p-4 text-2xl">
-      <font-awesome-icon
-        class="hover:cursor-pointer"
-        :icon="['fab', 'facebook']"
-      />
-      <font-awesome-icon
-        class="hover:cursor-pointer"
-        :icon="['fab', 'instagram']"
-      />
-      <font-awesome-icon
-        class="hover:cursor-pointer"
-        :icon="['fab', 'pinterest']"
-      />
-    </div>
-    <!-- search form -->
-    <div class="flex-1  m-2 flex justify-center items-start  p-4 box-border">
-      <input
-        class="w-full h-8 focus:outline-0 text-black pl-2 rounded-l-md"
-        type="text"
-      >
-      <button class="h-8  pl-2 pr-2 border-[1px] rounded-r-md border-white"><font-awesome-icon :icon="['fa', 'search']" /></button>
-    </div>
-
-  </div>
 </template>
 
-<style scoped>
+<style >
+  .full-setting {
+    @apply flex  w-full flex-col items-center justify-start overflow-hidden bg-slate-100 box-border;
+  }
+  .div-togglebutton {
+    @apply hidden w-full  justify-center gap-2 bg-white p-2 shadow-sm shadow-slate-400 lg:flex;
+  }
+  .scoped-size {
+    @apply h-full bg-white;
+  }
+  .nav {
+    @apply flex h-16 w-full items-center justify-between bg-gray-800;
+  }
+  .dividing-line {
+    @apply h-12 w-[1px] border-r-[1px] border-slate-200;
+  }
+  .togglebtn-pc {
+    @apply w-10 h-12  text-2xl rounded-md shadow-[1px_1px_2px_1px_rgba(0,0,0,0.3)] focus:shadow-inner focus:shadow-slate-600 hover:cursor-pointer hover:bg-slate-50;
+  }
+  .togglebtn-pad {
+    @apply w-10 h-12  flex justify-center pt-3 pb-3 rounded-md shadow-[1px_1px_2px_1px_rgba(0,0,0,0.3)] focus:shadow-inner focus:shadow-slate-600 hover:cursor-pointer hover:bg-slate-50;
+  }
+  .togglebtn-phone {
+    @apply w-10 h-12  flex justify-center pt-3 pb-3 pl-3 pr-3 rounded-md shadow-[1px_1px_2px_1px_rgba(0,0,0,0.3)] focus:shadow-inner focus:shadow-slate-600 hover:bg-slate-50;
+  }
+  .inside-square {
+    @apply w-6 h-full border-[3px] border-black rounded-sm;
+  }
+  .logo {
+    @apply ml-4 font-[Trattatello] text-4xl text-gray-200 hover:cursor-pointer;
+  }
+  .menu {
+    @apply relative flex h-6 w-6 flex-col items-center justify-center gap-1 text-white md:w-full md:flex-row md:justify-end;
+  }
+  .menu-logo {
+    @apply mr-4 text-2xl hover:text-gray-300 transition delay-700 ease-in-out active:animate-spin z-20;
+  }
+  .menu-list {
+    @apply justify-end   p-4 z-10;
+  }
+  .menu-item {
+    @apply hover:italic hover:text-black md:hover:text-white overflow-hidden md:border-white after:block after:w-full after:translate-x-[-100%] after:h-[1px] md:after:bg-white after:bg-black after:hover:translate-x-0 after:hover:transition-transform hover:cursor-pointer;
+  }
+  .board-list {
+    @apply z-0 h-[650px] w-full flex flex-col justify-center gap-2 pb-2 md:pb-0 md:flex-1 relative overflow-hidden;
+  }
+  .first-block {
+    @apply md:flex;
+  }
+  .board-togglebtn-position {
+    @apply absolute flex flex-1 items-center justify-between pl-4 pr-4 font-serif w-full text-6xl z-10;
+  }
+  .board-togglebtn {
+    @apply font-bold text-white/60 hover:cursor-pointer hover:text-white/80;
+  }
+  .board-pagination-position {
+    @apply absolute bottom-4 w-full flex items-end justify-center gap-2;
+  }
+  .pagination-item {
+    @apply z-10 h-2 w-2 rounded-full;
+  }
+  .board-img {
+    @apply absolute;
+  }
+  .ad {
+    @apply z-0 flex h-[650px] w-full flex-col justify-center gap-2 pb-2 md:pb-0 md:flex-1 items-center overflow-hidden;
+  }
+  img {
+    @apply w-full h-full object-cover hover:scale-110 transition delay-200 ease-in-out duration-500;
+  }
+  .block-title {
+    @apply p-8 text-center text-3xl font-bold tracking-[0.5rem];
+  }
+  .block-newproduct {
+    @apply md:flex md:gap-4 md:pl-4 md:pr-4 overflow-hidden;
+  }
+  .newproduct-block-img {
+    @apply flex-1 overflow-hidden;
+  }
+  .newproduct-img {
+    @apply h-[465px] w-full;
+  }
+  .newproduct-itemlist {
+    @apply p-2 md:flex md:flex-1 md:h-[465px] md:flex-col md:justify-around md:p-0 justify-between;
+  }
+  .newproduct-item {
+    @apply mb-2 flex h-16 items-center justify-between bg-gray-100 pl-6 pr-4 transition-colors last:mb-0 hover:cursor-pointer hover:bg-gray-800 hover:text-white;
+  }
+  .newproduct-btn {
+    @apply border-2 border-slate-500 p-2 text-[10px];
+  }
+  .discount-changetype-btn {
+    @apply mb-2 ml-4 mr-4 mt-2 w-fit rounded-md border-2 border-slate-600 pl-1 pr-1 hover:cursor-pointer;
+  }
+  .block-discount {
+    @apply w-full flex flex-wrap items-start justify-center pl-2 pr-2 sm:pl-4 sm:pr-4 gap-2;
+  }
+  .discount-item {
+    @apply transition delay-500;
+  }
+  .discount-btn {
+    @apply mt-2 w-28 rounded-lg border-[1px] border-slate-800 pb-1 pl-2 pr-2 pt-1 text-sm hover:bg-slate-800 hover:text-white hover:font-bold;
+  }
+  .block-hitotopic {
+    @apply pl-4 pr-4 md:flex;
+  }
+  .hitotopic-items {
+    @apply relative mb-4 last:mb-0 md:mb-0 md:flex-1;
+  }
+  .hitotopic-btn-position {
+    @apply absolute left-8 top-[50%] z-10 text-white;
+  }
+  .hitotopic-btn {
+    @apply absolute left-8 top-[57%] z-10 border-[1px] border-white pb-1 pl-4 pr-4 pt-1 text-xs text-white;
+  }
+  .hitotopic-img {
+    @apply h-[478px] w-full object-cover;
+  }
+  .hitotopic-hover {
+    @apply absolute left-0 top-0 h-full w-full bg-black/50 transition delay-100 ease-linear hover:bg-gray-600/50;
+  }
+  .block-findgoods {
+    @apply pl-4 pr-4 md:flex md:gap-6;
+  }
+  .findgoods-items {
+    @apply relative mb-4 h-[340px] w-full overflow-hidden md:mb-0 md:flex-1;
+  }
+  .findgoods-img {
+    @apply h-[340px] w-full object-cover transition-transform hover:scale-105 hover:cursor-pointer hover:bg-gray-300 hover:blur-sm hover:brightness-125;
+  }
+  .findgoods-btn {
+    @apply border-[1px] border-white pb-1 pl-4 pr-4 pt-1 text-xs font-thin hover:bg-white hover:text-black;
+  }
+  .findgoods-hover {
+    @apply absolute top-1/2 z-10 flex w-full flex-col items-center justify-center text-white;
+  }
+  .block-followus {
+    @apply flex columns-3 flex-wrap justify-center pl-4 pr-4 mb-8;
+  }
+  .followus-item {
+    @apply relative flex justify-center items-center p-1;
+  }
+  .followus-item-position {
+    @apply absolute top-0 w-full h-full flex flex-col justify-between align-middle text-white text-center  hover:bg-black/50 opacity-0 hover:opacity-100 transition delay-300 ease-linear hover:cursor-pointer;
+  }
+  .followus-icon {
+    @apply flex gap-4 justify-center;
+  }
+  .block-footer {
+    @apply w-full h-auto max-h-96 bg-black flex justify-around text-white px-4 pt-4 pb-12;
+  }
+  .footer-inline-block {
+    @apply flex-1  flex flex-col p-2  h-fit md:h-full;
+  }
+  .footer-mediaicon {
+    @apply flex-1  flex justify-start gap-6 p-2 text-2xl;
+  }
+  .footer-searchform {
+    @apply flex-1  flex justify-center items-start  p-2 box-border;
+  }
+  .searchform-input {
+    @apply w-full h-8 focus:outline-0 text-black pl-2 rounded-l-md;
+  }
+  .searchform-btn {
+    @apply h-8  pl-2 pr-2 border-[1px] rounded-r-md border-white;
+  }
 </style>
